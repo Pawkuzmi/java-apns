@@ -14,9 +14,9 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
