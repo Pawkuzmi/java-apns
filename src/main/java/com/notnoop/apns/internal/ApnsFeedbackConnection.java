@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.Map;
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLSocketFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.notnoop.exceptions.NetworkIOException;
@@ -60,7 +61,7 @@ public class ApnsFeedbackConnection {
     }
 
     public ApnsFeedbackConnection(final SocketFactory factory, final String host, final int port,
-            final Proxy proxy, int readTimeout, int connectTimeout, final String proxyUsername, final String proxyPassword) {
+                                  final Proxy proxy, int readTimeout, int connectTimeout, final String proxyUsername, final String proxyPassword) {
         this.factory = factory;
         this.host = host;
         this.port = port;
@@ -71,26 +72,13 @@ public class ApnsFeedbackConnection {
         this.proxyPassword = proxyPassword;
     }
 
-    int DELAY_IN_MS = 1000;
-    private static final int RETRIES = 3;
-
     public Map<String, Date> getInactiveDevices() throws NetworkIOException {
-        int attempts = 0;
-        while (true) {
-            try {
-                attempts++;
-                final Map<String, Date> result = getInactiveDevicesImpl();
-
-                attempts = 0;
-                return result;
-            } catch (final Exception e) {
-                logger.warn("Failed to retrieve invalid devices", e);
-                if (attempts >= RETRIES) {
-                    logger.error("Couldn't get feedback connection", e);
-                    Utilities.wrapAndThrowAsRuntimeException(e);
-                }
-                Utilities.sleep(DELAY_IN_MS);
-            }
+        try {
+            return getInactiveDevicesImpl();
+        } catch (final Exception e) {
+            logger.warn("Failed to retrieve invalid devices", e);
+            Utilities.wrapAndThrowAsRuntimeException(e);
+            throw new NetworkIOException();
         }
     }
 
